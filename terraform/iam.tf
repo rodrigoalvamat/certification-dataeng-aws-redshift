@@ -5,8 +5,9 @@ provider "aws" {
 
 // IAM role for Redshift 
 resource "aws_iam_role" "role_redshift" {
+  description = "Provides write permissions to CloudWatch Logs and S3 Full Access"
+
   name               = "${var.prefix}-${var.environment}-iam-role-redshift"
-  description        = "Provides write permissions to CloudWatch Logs and S3 Full Access"
   path               = "/"
   assume_role_policy = file("./iam/role-redshift.json")
 
@@ -15,10 +16,11 @@ resource "aws_iam_role" "role_redshift" {
 
 // IAM policy for Redshift
 resource "aws_iam_policy" "policy_redshift" {
-  name        = "${var.prefix}-${var.environment}-iam-policy-redshift"
   description = "Provides write permissions to CloudWatch Logs and S3 Full Access"
-  path        = "/"
-  policy      = file("./iam/policy-redshift.json")
+
+  name   = "${var.prefix}-${var.environment}-iam-policy-redshift"
+  path   = "/"
+  policy = file("./iam/policy-redshift.json")
 }
 
 // IAM role policy attachment for Redshift

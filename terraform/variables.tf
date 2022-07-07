@@ -2,7 +2,8 @@
 variable "region" {
   description = "AWS region"
   type        = string
-  default     = "us-east-1"
+  default     = "us-west-2"
+  #default     = "us-east-1"
 }
 
 variable "environment" {
@@ -36,6 +37,13 @@ locals {
     environment = var.environment
     project     = "udacity-dw"
   }
+}
+
+// PostgreSQL toggler
+variable "postgres_enabled" {
+  description = "PostgreSQL database is enabled"
+  type        = bool
+  default     = false
 }
 
 // PostgreSQL sensitive information
