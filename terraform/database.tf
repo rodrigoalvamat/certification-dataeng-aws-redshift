@@ -25,8 +25,8 @@ resource "aws_db_instance" "postgres" {
 resource "aws_redshift_cluster" "redshift_cluster" {
   cluster_identifier  = "${var.prefix}-${var.environment}-redshift-cluster"
   node_type           = "dc2.large"
-  cluster_type        = "multi-node"
-  number_of_nodes     = 4
+  cluster_type        = "single-node"
+  number_of_nodes     = 1
   skip_final_snapshot = true
 
   database_name   = var.redshift_database

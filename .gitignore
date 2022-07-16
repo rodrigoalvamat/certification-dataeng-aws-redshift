@@ -1,4 +1,14 @@
+# python 
+__pycache__
+
+# terraform
 .terraform
 terraform.tfstate
 terraform.tfstate.backup
 secret.tfvars
+
+# aws sensitive config info
+aws.ini
+
+# test data
+data

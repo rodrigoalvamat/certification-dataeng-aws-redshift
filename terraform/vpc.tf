@@ -6,16 +6,25 @@ module "vpc" {
   name = "${var.prefix}-${var.environment}-vpc"
   cidr = "10.0.0.0/16"
   azs  = ["us-west-2a", "us-west-2b", "us-west-2c", "us-west-2d"]
-  #azs              = ["us-east-1a", "us-east-1b", "us-east-1c", "us-east-1d", "us-east-1e", "us-east-1f"]
-  
+  #azs = ["us-east-1a", "us-east-1b", "us-east-1c", "us-east-1d", "us-east-1e", "us-east-1f"]
+
   private_subnets  = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
   public_subnets   = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
   database_subnets = ["10.0.7.0/24", "10.0.8.0/24", "10.0.9.0/24"]
+  redshift_subnets = ["10.0.10.0/24", "10.0.11.0/24", "10.0.12.0/24"]
 
-  create_database_subnet_group = true
-  enable_nat_gateway           = true
-  single_nat_gateway           = true
-  enable_dns_hostnames         = true
+  enable_nat_gateway     = true
+  single_nat_gateway     = true
+  one_nat_gateway_per_az = false
+
+  enable_dns_hostnames = true
+  enable_dns_support   = true
+
+  create_database_subnet_route_table     = true
+  create_database_internet_gateway_route = true
+
+  enable_public_redshift = true
+  enable_vpn_gateway     = true
 
   tags = merge(local.common_tags, { category = "network", resource = "vpc" })
 }
@@ -24,7 +33,7 @@ module "vpc" {
 resource "aws_db_subnet_group" "subnet_group_postgres" {
   name       = "${var.prefix}-${var.environment}-subnet-group-postgres"
   count      = var.postgres_enabled ? 1 : 0
-  subnet_ids = module.vpc.public_subnets
+  subnet_ids = module.vpc.database_subnets
 
   tags = merge(local.common_tags, { category = "network", resource = "subnet-group", service = "postgres" })
 }
@@ -58,7 +67,7 @@ resource "aws_security_group" "security_group_postgres" {
 // Redshift subnet group
 resource "aws_redshift_subnet_group" "subnet_group_redshift" {
   name       = "${var.prefix}-${var.environment}-subnet-group-redshift"
-  subnet_ids = module.vpc.public_subnets
+  subnet_ids = module.vpc.redshift_subnets
 
   tags = merge(local.common_tags, { category = "network", resource = "subnet-group", service = "redshift" })
 }
@@ -73,7 +82,7 @@ resource "aws_security_group" "security_group_redshift" {
   ingress {
     from_port   = 5439
     to_port     = 5439
-    protocol    = "all"
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
