@@ -2,10 +2,14 @@
 
 Check the aws.ini.template file configuration sections and options.
 """
-
+# sys libs
+import os
 # config libs
 import configparser
 
+# aws.ini file path
+DIR = os.path.dirname(os.path.abspath(__file__)) 
+INI_PATH = os.path.join(DIR, 'aws.ini')
 
 class Config:
     """This class defines a wrapper for ConfigParser.
@@ -26,7 +30,7 @@ class Config:
         """
 
         self.parser = configparser.ConfigParser()
-        self.parser.read_file(open('aws.ini', encoding='utf-8'))
+        self.parser.read_file(open(INI_PATH, encoding='utf-8'))
 
     def get(self, section, option):
         """Reads a config option value from a section.

@@ -4,8 +4,6 @@
 import io
 # AWS libs
 import boto3
-# config libs
-from config import Config
 # data libs
 import json
 import pandas as pd
@@ -19,9 +17,12 @@ class S3Loader:
     loader = S3Loader()
     """
 
-    def __init__(self):
-        """Creates the S3Loader object to read json files from buckets."""
-        config = Config()
+    def __init__(self, config):
+        """Creates the S3Loader object to read json files from buckets.
+
+        Args:
+            config: The aws.ini config file wrapper object.
+        """
         self.client = self.__create_cliente(config)
         self.resource = self.__create_resource(config)
 

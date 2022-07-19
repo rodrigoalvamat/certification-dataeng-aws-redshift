@@ -1,0 +1,10 @@
+src.notebook package
+====================
+
+Module contents
+---------------
+
+.. automodule:: src.notebook
+   :members:
+   :undoc-members:
+   :show-inheritance:

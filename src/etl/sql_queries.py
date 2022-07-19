@@ -60,57 +60,62 @@ artist_longitude    DOUBLE PRECISION
 
 CREATE_TABLE_SONGPLAYS = """
 CREATE TABLE songplays (
-songplay_id         TEXT                NOT NULL,
-level               TEXT                NOT NULL,
-location            TEXT                NOT NULL,
-user_agent          TEXT                NOT NULL,
-session_id          SMALLINT            NOT NULL,
-user_id             INTEGER             NOT NULL,
-song_id             TEXT                        ,
-artist_id           TEXT                        ,
-start_time          TIMESTAMP           NOT NULL
+songplay_id         TEXT                NOT NULL                   ,
+level               TEXT                NOT NULL                   ,
+location            TEXT                NOT NULL                   ,
+user_agent          TEXT                NOT NULL                   ,
+session_id          SMALLINT            NOT NULL                   ,
+user_id             INTEGER             NOT NULL                   ,
+song_id             TEXT                                           ,
+artist_id           TEXT                                           ,
+start_time          TIMESTAMP           NOT NULL    sortkey distkey,
+PRIMARY KEY (songplay_id)
 );
 """
 
 CREATE_TABLE_USERS = """
 CREATE TABLE users (
-user_id             INTEGER             NOT NULL,
-first_name          TEXT                NOT NULL,
-last_name           TEXT                NOT NULL,
-gender              TEXT                NOT NULL,
-level               TEXT                NOT NULL
-);
+user_id             INTEGER             NOT NULL    sortkey,
+first_name          TEXT                NOT NULL           ,
+last_name           TEXT                NOT NULL           ,
+gender              TEXT                NOT NULL           ,
+level               TEXT                NOT NULL           ,
+PRIMARY KEY (user_id)
+) diststyle auto;
 """
 
 CREATE_TABLE_SONGS = """
 CREATE TABLE songs (
-song_id             TEXT                NOT NULL,
-title               TEXT                NOT NULL,
-year                INTEGER             NOT NULL,
-duration            FLOAT               NOT NULL,
-artist_id           TEXT                NOT NULL
-);
+song_id             TEXT                NOT NULL           ,
+title               TEXT                NOT NULL    sortkey,
+year                INTEGER             NOT NULL           ,
+duration            FLOAT               NOT NULL           ,
+artist_id           TEXT                NOT NULL           ,
+PRIMARY KEY (song_id)
+) diststyle auto;
 """
 
 CREATE_TABLE_ARTISTS = """
 CREATE TABLE artists (
-artist_id           TEXT                NOT NULL,
-name                TEXT                NOT NULL,
-location            TEXT                NOT NULL,
-latitude            DOUBLE PRECISION            ,
-longitude           DOUBLE PRECISION
-);
+artist_id           TEXT                NOT NULL           ,
+name                TEXT                NOT NULL    sortkey,
+location            TEXT                NOT NULL           ,
+latitude            DOUBLE PRECISION                       ,
+longitude           DOUBLE PRECISION                       ,
+PRIMARY KEY (artist_id)
+) diststyle auto;
 """
 
 CREATE_TABLE_TIME = """
 CREATE TABLE time (
-start_time          TIMESTAMP           NOT NULL,
-hour                NUMERIC(2)          NOT NULL,
-day                 NUMERIC(2)          NOT NULL,
-week                NUMERIC(2)          NOT NULL,
-month               NUMERIC(2)          NOT NULL,
-year                INTEGER             NOT NULL,
-weekday             TEXT                NOT NULL
+start_time          TIMESTAMP           NOT NULL    sortkey distkey,
+hour                NUMERIC(2)          NOT NULL                   ,
+day                 NUMERIC(2)          NOT NULL                   ,
+week                NUMERIC(2)          NOT NULL                   ,       
+month               NUMERIC(2)          NOT NULL                   ,
+year                INTEGER             NOT NULL                   ,
+weekday             TEXT                NOT NULL                   ,
+PRIMARY KEY (start_time)
 );
 """
 
@@ -134,7 +139,7 @@ FORMAT AS JSON 'auto ignorecase'
 region '{config.get('AWS', 'REGION')}';
 """
 
-# FINAL TABLES
+# FACT AND DIMENSIONS TABLES
 
 INSERT_TABLE_SONGPLAYS = """
 INSERT INTO songplays
@@ -151,7 +156,7 @@ s.artist_id AS artist_id,
 TIMESTAMP 'epoch' + e.ts::float / 1000 * INTERVAL '1 second' AS start_time
 FROM staging_events AS e
 JOIN staging_songs  AS s
-ON e.song = s.title AND e.artist = s.artist_name
+ON e.song = s.title AND e.artist = s.artist_name AND e.length = s.duration
 WHERE e.page = 'NextSong'
 ORDER BY e.ts
 );
@@ -183,7 +188,7 @@ s.duration AS duration,
 s.artist_id AS artist_id
 FROM staging_events AS e
 JOIN staging_songs  AS s
-ON e.song = s.title AND e.artist = s.artist_name
+ON e.song = s.title AND e.artist = s.artist_name AND e.length = s.duration
 WHERE e.page = 'NextSong'
 ORDER BY s.song_id
 );
@@ -200,7 +205,7 @@ s.artist_latitude AS latitude,
 s.artist_longitude AS longitude
 FROM staging_events AS e
 JOIN staging_songs AS s
-ON e.song = s.title AND e.artist = s.artist_name
+ON e.song = s.title AND e.artist = s.artist_name AND e.length = s.duration
 WHERE e.page = 'NextSong'
 ORDER BY s.artist_id
 );
@@ -219,7 +224,7 @@ DATE_PART(year, TIMESTAMP 'epoch' + e.ts::float / 1000 * INTERVAL '1 second') AS
 DATE_PART(dayofweek, TIMESTAMP 'epoch' + e.ts::float / 1000 * INTERVAL '1 second') AS weekday
 FROM staging_events AS e
 JOIN staging_songs  AS s
-ON e.song = s.title AND e.artist = s.artist_name
+ON e.song = s.title AND e.artist = s.artist_name AND e.length = s.duration
 WHERE e.page = 'NextSong'
 ORDER BY e.ts
 );

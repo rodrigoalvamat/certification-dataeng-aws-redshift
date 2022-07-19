@@ -1,0 +1,61 @@
+src.etl package
+===============
+
+Submodules
+----------
+
+src.etl.config module
+---------------------
+
+.. automodule:: src.etl.config
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+src.etl.connection module
+-------------------------
+
+.. automodule:: src.etl.connection
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+src.etl.create\_tables module
+-----------------------------
+
+.. automodule:: src.etl.create_tables
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+src.etl.etl module
+------------------
+
+.. automodule:: src.etl.etl
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+src.etl.s3 module
+-----------------
+
+.. automodule:: src.etl.s3
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+src.etl.sql\_queries module
+---------------------------
+
+.. automodule:: src.etl.sql_queries
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: src.etl
+   :members:
+   :undoc-members:
+   :show-inheritance:

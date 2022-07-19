@@ -59,14 +59,12 @@ class Connection:
         """Commit any pending transaction to the database."""
         self.connection.commit()
 
-    def execute(self, query, variables=None, commit=False,):
+    def execute(self, query, commit=False):
         """Execute a database operation (query or command).
 
         Args:
             query: If True uses the Redshift connector API,
                 otherwise use the default Psycopg2 adapter.
-            variables: Variables are specified either with positional (%s)
-                or named (%(name)s) placeholders.
             commit: If True Commit the transaction to the database
                 otherwise leave it pending.
                 
@@ -76,7 +74,7 @@ class Connection:
             If a query was executed, the returned values can be retrieved
             using the corresponding cursor fetch*() methods.
         """
-        result = self.cursor.execute(query, vars=variables)
+        result = self.cursor.execute(query)
         if commit:
             self.commit()
 
