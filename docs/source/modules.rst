@@ -1,4 +1,4 @@
-etl
+ETL
 ===
 
 .. toctree::

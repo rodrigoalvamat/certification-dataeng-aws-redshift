@@ -1,20 +1,20 @@
-"""Defines a Config class to read the AWS configuration from aws.ini file.
+"""Defines a Config class to read the AWS configuration from dwh.cfg file.
 
-Check the aws.ini.template file configuration sections and options.
+Check the dwh.cfg.template file configuration sections and options.
 """
 # sys libs
 import os
 # config libs
 import configparser
 
-# aws.ini file path
+# dwh.cfg file path
 DIR = os.path.dirname(os.path.abspath(__file__)) 
-INI_PATH = os.path.join(DIR, 'aws.ini')
+INI_PATH = os.path.join(DIR, 'dwh.cfg')
 
 class Config:
     """This class defines a wrapper for ConfigParser.
 
-    Use the aws.ini.template file as a reference to configure
+    Use the dwh.cfg.template file as a reference to configure
     the application according to your AWS account settings.
 
     Usage example:
@@ -24,7 +24,7 @@ class Config:
     """
 
     def __init__(self):
-        """Creates a Config object from aws.ini file.
+        """Creates a Config object from dwh.cfg file.
 
         Config values will be UTF-8 encoded.
         """
@@ -36,10 +36,10 @@ class Config:
         """Reads a config option value from a section.
 
         Retrieves an option value pertaining to the given section
-        from the aws.ini file.
+        from the dwh.cfg file.
 
         Args:
-            secion: The aws.ini file section name.
+            secion: The dwh.cfg file section name.
               E.g. REDSHIFT
             option: The section config option name.
               E.g. PORT

@@ -23,10 +23,48 @@ The objective of this project is to migrate from an on-premises PostgreSQL datab
 - [Pandas 1.4.3](https://pandas.pydata.org)
 - [Terraform 1.2.3](https://www.terraform.io)
 - [Sphinx 5.0.2](https://www.sphinx-doc.org)
+  
+<br/>
+
+```python
+# install project requirements
+pip install -r requirements.txt
+```
+
+**NOTE**: Install all python libraries before running the ETL pipeline scripts and the jupyter notebooks.
 
 <br/>
 
-## AWS Services
+## Project Folder Structure
+
+```
+project
+│   README.md
+└───src
+│   └───etl
+│   |   │   create_tables.py
+│   |   │   etl.py
+|   |   |   sql_queries.py
+|   |   |   dwh.cfg
+|   |   |   ...
+│   └───notebook
+│       │   etl.ipynb
+│       │   tests.ipynb
+└───docs
+    └───build
+        └───html
+            |   index.html
+```
+
+<br/>
+
+## Auto-generate API Documentation
+
+The [Sphinx](https://www.sphinx-doc.org) documentation generator was used to build the [HTML docs](https://github.com/rodrigoalvamat/datadiver-aws-data-warehouse/blob/main/docs/build/html/index.html) from the source code ```DOCSTRIGS```.
+
+<br/>
+
+## AWS Services and Resources
 
 This is the list of services that have been provisioned in the AWS cloud:
 
@@ -49,10 +87,6 @@ We used Terraform to automate infrastructure provisioning, including servers, ne
 1. Edit the [terraform/secret.tfvars](./terraform//secret.tfvars) file according to your preferred settings:
 
 ```ini
-postgres_database = "dwh"
-postgres_user     = "dwhuser"
-postgres_password = "xxxxxxxxxxxxxxxxxxxxxxxx"
-
 redshift_database = "dwh"
 redshift_user     = "dwhuser"
 redshift_password = "xxxxxxxxxxxxxxxxxxxxxxxx"
@@ -78,11 +112,103 @@ cd terraform
 terraform init
 
 # create or update infrastructure
-terraform apply
+terraform apply -var-file="secret.tfvars"
 
 # destroy previously-created infrastructure
-terraform destroy
-```   
+terraform destroy -var-file="secret.tfvars"
+```
+
+## Database Schema Design
+
+The database is modeled as a star schema that consists of a fact table (songplays) referencing four dimension tables (artists, songs, time, users).
+
+All the SQL types and tables were defined in the [src/etl/sql_queries.py](./src/etl/sql_queries.py) file.
+
+1. **Primary Keys** - All tables have their unique identifier column set as the primary key. 
+ 
+2. **Distribution Style** - The fact table (songplays) and the dimension table (time) were defined with the distribution by key (distkey), since the frequency of joins between them tends to be high. Furthermore, both grow on the same scale. Finally, the rest of the tables were set to auto and Redshift chooses the appropriate distribution. [Choose the best distribution style](https://docs.aws.amazon.com/redshift/latest/dg/c_best-practices-best-dist-key.html).
+
+3. **Sort Keys** - The fact table (songplays) and the dimension table (time) specify the join column as the sort key. On the other hand, the chosen criteria for the other tables was the column most frequently used to filter equality. [Choose the best sort key](https://docs.aws.amazon.com/redshift/latest/dg/c_best-practices-sort-key.html).
+
+The figure below shows the database structure as an entity relationship diagram:
+
+<div style='background-color:#fff;padding:24px;'>
+<img src='./images/schema-erd.png' alt='Data Warehouse Tables ER Diagram'/>
+</div>
+
+<br/>
+
+## Creating the Database Schema
+
+The sample code below shows the main pipeline of the database creation process in the [src/etl/create_tables.py](./src/etl/create_tables.py) script:
+
+```python
+schema = SchemaPipeline(connection)
+schema.drop()
+schema.create()
+```
+<br/>
+
+**IMPORTANT:** You should customize the [src/etl/dwh.cfg.template](./src/etl/dwh.cfg.template) configuration file according to your AWS environment and rename it to **dwh.cfg**.
+
+**Run the command** below to create the database schema:
+
+```bash
+# change directory to src 
+cd src
+
+# to create the schema using the redshift connector
+python -m etl.create_tables --redshift
+
+# to create the schema using the pyscopg2 adapter (unstable behavior)
+python -m etl.create_tables
+```
+<br/>
+
+
+## ETL Pipeline
+
+The ETL processes were developed in **two phases**. The first one implements the **Extract Phase** and uses the [COPY](https://docs.aws.amazon.com/redshift/latest/dg/r_COPY.html) command to transfer raw data from JSON files to the Redshift staging tables. The second one is the **Transform and Load Phase** and uses the [INSERT](https://docs.aws.amazon.com/redshift/latest/dg/r_INSERT_30.html) statement to load data into the star schema tables. Before insertion, the staging table's columns are joined, transformed, and cleaned by the nested [SELECT](https://docs.aws.amazon.com/redshift/latest/dg/r_SELECT_synopsis.html) statement.
+
+
+The figure below shows the ETL Pipeline process diagram.
+
+<div style='background-color:#fff;padding:24px;'>
+<img src='./images/etl-pipeline.png' alt='Staging Tables ER Diagram'/>
+</div>
+
+<br/>
+
+The sample code below shows the main ETL pipeline process in the [src/etl/etl.py](./src/etl/etl.py) script:
+
+```python
+pipeline = ETLPipeline(connection)
+pipeline.load()
+pipeline.insert()
+```
+<br/>
+
+**IMPORTANT:** You should customize the [src/etl/dwh.cfg.template](./src/etl/dwh.cfg.template) configuration file according to your AWS environment and rename it to **dwh.cfg**.
+
+**Run the command** below to execute the ETL pipeline:
+
+```bash
+# change directory to src 
+cd src
+
+# to run the pipeline using the redshift connector
+python -m etl.etl --redshift
+
+# to run the pipeline using the pyscopg2 adapter (unstable behavior)
+python -m etl.etl
+```
+<br/>
+
+## ETL Pipeline Jupyter Notebook
+
+You can also run the ETL Pipeline using the [jupyter notebook](./src/notebook/etl.ipynb).
+
+<br/>
 
 ## JSON Data Files Schema
 <br/>
@@ -131,20 +257,34 @@ terraform destroy
 ```
 <br/>
 
-## Fact and Dimensions Table Design
+## JSON Data Extract Pipeline
 
-<div style='background-color:#fff;padding:24px;'>
-<img src='./images/schema-erd.png' alt='Staging Tables ER Diagram'/>
-</div>
-<br/>
-
-## Choose the Best Distribution Style
-
-[AWS Guide](https://docs.aws.amazon.com/redshift/latest/dg/c_best-practices-best-dist-key.html)
-
-## Raw Data Extraction Pipeline
+The figure below shows the ETL Pipeline's extract phase and the staging tables structure.
 
 <div style='background-color:#fff;padding:24px;'>
 <img src='./images/staging-erd.png' alt='Staging Tables ER Diagram'/>
 </div>
+
+<br/>
+
+## Data Quality Checks
+
+The [tests notebook](./src/notebook/tests.ipynb) defines a sequence of validation tasks that depends on running the ETL pipeline through the [ETL notebook](./src/notebook/etl.ipynb) first.
+
+At the end of the ETL pipeline execution, a query will be executed for each table, and the result will be stored in a CSV file.
+
+**NOTE**: Although it is not recommended to query all rows of a table, this decision was made because the service is is too expensive to keep the cluster running indefinitely, and the project tables were small.
+
+Right after the ETL pipeline notebook, you can run the tests notebook to check the following:
+
+| Action                            | Validation                                                         |
+|-----------------------------------|--------------------------------------------------------------------|
+| **Load all S3 log_data**          | Compares with the staging table, check row count and nulls         |   
+| **Load the staging_events table** | Filter page = NextSong and apply a type check lambda function      |
+| **Load S3 log_json_path**         | Check file content                                                 |
+| **Load S3 song_data sample**      | Apply a type check lambda function                                 |
+| **Load the staging_songs table**  | Join with staging_events to validate redshift's join by row count  |
+| **Load each DW table CSV**        | Check data inserted into songplays, users, songs, artists and time |
+| **Summary DataFrame**             | Compare the number of rows for each table with previous results    |
+
 <br/>

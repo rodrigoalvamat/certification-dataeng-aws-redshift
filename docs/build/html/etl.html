@@ -9,7 +9,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>etl package &mdash; AWS Redshift Data Warehouse 1.0.0 documentation</title>
+  <title>ETL Package &mdash; AWS Redshift Data Warehouse 1.0.0 documentation</title>
   
 
   
@@ -39,7 +39,7 @@
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="etl" href="modules.html" /> 
+    <link rel="prev" title="ETL" href="modules.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -85,8 +85,8 @@
             
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="modules.html">etl</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">etl package</a><ul>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">ETL</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">ETL Package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-config">etl.config module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-connection">etl.connection module</a></li>
@@ -144,9 +144,9 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-          <li><a href="modules.html">etl</a> &raquo;</li>
+          <li><a href="modules.html">ETL</a> &raquo;</li>
         
-      <li>etl package</li>
+      <li>ETL Package</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -166,20 +166,19 @@
            <div itemprop="articleBody">
             
   <section id="etl-package">
-<h1>etl package<a class="headerlink" href="#etl-package" title="Permalink to this heading">¶</a></h1>
+<h1>ETL Package<a class="headerlink" href="#etl-package" title="Permalink to this heading">¶</a></h1>
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">¶</a></h2>
 </section>
 <section id="module-config">
 <span id="etl-config-module"></span><h2>etl.config module<a class="headerlink" href="#module-config" title="Permalink to this heading">¶</a></h2>
-<p>Defines a Config class to read the AWS configuration from aws.ini file.</p>
-<p>Check the aws.ini.template file configuration sections and options.</p>
+<p>Defines a Config class to read the AWS configuration from dwh.cfg file.</p>
+<p>Check the dwh.cfg.template file configuration sections and options.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="config.Config">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">config.</span></span><span class="sig-name descname"><span class="pre">Config</span></span><a class="headerlink" href="#config.Config" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>This class defines a wrapper for ConfigParser.</p>
-<p>Use the aws.ini.template file as a reference to configure
+<dd><p>This class defines a wrapper for ConfigParser.</p>
+<p>Use the dwh.cfg.template file as a reference to configure
 the application according to your AWS account settings.</p>
 <p>Usage example:</p>
 <p>config = Config()
@@ -189,11 +188,11 @@ config.get(‘REDSHIFT’, ‘USER’)</p>
 <span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">section</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">option</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#config.Config.get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads a config option value from a section.</p>
 <p>Retrieves an option value pertaining to the given section
-from the aws.ini file.</p>
+from the dwh.cfg file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>secion</strong> – The aws.ini file section name.
+<li><p><strong>secion</strong> – The dwh.cfg file section name.
 E.g. REDSHIFT</p></li>
 <li><p><strong>option</strong> – The section config option name.
 E.g. PORT</p></li>
@@ -221,8 +220,7 @@ The Psycopg2 adapter was kept as default to satisfy the projetc requirements.</p
 <dl class="py class">
 <dt class="sig sig-object py" id="connection.Connection">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">connection.</span></span><span class="sig-name descname"><span class="pre">Connection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">redshift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#connection.Connection" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>This class defines a wrapper for Pycopg2 and
+<dd><p>This class defines a wrapper for Pycopg2 and
 Redshift connector API Connection classes.</p>
 <p>Both connectors will get their configuration parameters
 from the Config wrapper.</p>
@@ -242,15 +240,13 @@ from the Config wrapper.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="connection.Connection.execute">
-<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">commit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#connection.Connection.execute" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">commit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#connection.Connection.execute" title="Permalink to this definition">¶</a></dt>
 <dd><p>Execute a database operation (query or command).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>query</strong> – If True uses the Redshift connector API,
 otherwise use the default Psycopg2 adapter.</p></li>
-<li><p><strong>variables</strong> – Variables are specified either with positional (%s)
-or named (%(name)s) placeholders.</p></li>
 <li><p><strong>commit</strong> – If True Commit the transaction to the database
 otherwise leave it pending.</p></li>
 </ul>
@@ -273,8 +269,7 @@ using the corresponding cursor fetch*() methods.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="create_tables.SchemaPipeline">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">create_tables.</span></span><span class="sig-name descname"><span class="pre">SchemaPipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#create_tables.SchemaPipeline" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>This class defines the Redshift table schema pipeline.</p>
+<dd><p>This class defines the Redshift table schema pipeline.</p>
 <p>Code usage example with default pyscopg2 connection:</p>
 <p>connection = Connection()
 pipeline = SchemaPipeline(connection)
@@ -321,8 +316,7 @@ and insert data into the Redshift Data Warehouse tables.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="etl.ETLPipeline">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">etl.</span></span><span class="sig-name descname"><span class="pre">ETLPipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#etl.ETLPipeline" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>This class defines the Redshift ETL pipeline.</p>
+<dd><p>This class defines the Redshift ETL pipeline.</p>
 <p>Code usage example with default pyscopg2 connection:</p>
 <p>connection = Connection()
 pipeline = ETLPipeline(connection)
@@ -367,9 +361,8 @@ otherwise use the default Psycopg2 adapter.</p>
 <p>Defines the AWS S3Loader class to read json files from buckets.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="s3.S3Loader">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">s3.</span></span><span class="sig-name descname"><span class="pre">S3Loader</span></span><a class="headerlink" href="#s3.S3Loader" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>This class defines the AWS S3 file loader.</p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">s3.</span></span><span class="sig-name descname"><span class="pre">S3Loader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#s3.S3Loader" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class defines the AWS S3 file loader.</p>
 <p>Usage example:</p>
 <p>loader = S3Loader()</p>
 <dl class="py method">
@@ -414,6 +407,38 @@ the data of the json file.</p>
 <p>This module defines a constant for each AWS Redshift SQL statement.
 Then, a list is created to group each SQL query category,
 such as DROP, CREATE, COPY and INSERT.</p>
+<dl class="py data">
+<dt class="sig sig-object py" id="sql_queries.CREATE_TABLE_QUERIES">
+<span class="sig-prename descclassname"><span class="pre">sql_queries.</span></span><span class="sig-name descname"><span class="pre">CREATE_TABLE_QUERIES</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">List</span> <span class="pre">of</span> <span class="pre">CREATE</span> <span class="pre">table</span> <span class="pre">queries</span> <span class="pre">statements</span> <span class="pre">executed</span> <span class="pre">by</span> <span class="pre">the</span> <span class="pre">SchemaPipeline.</span></em><a class="headerlink" href="#sql_queries.CREATE_TABLE_QUERIES" title="Permalink to this definition">¶</a></dt>
+<dd><p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="sql_queries.DROP_TABLE_QUERIES">
+<span class="sig-prename descclassname"><span class="pre">sql_queries.</span></span><span class="sig-name descname"><span class="pre">DROP_TABLE_QUERIES</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">List</span> <span class="pre">of</span> <span class="pre">DROP</span> <span class="pre">table</span> <span class="pre">queries</span> <span class="pre">statements</span> <span class="pre">executed</span> <span class="pre">by</span> <span class="pre">the</span> <span class="pre">SchemaPipeline.</span></em><a class="headerlink" href="#sql_queries.DROP_TABLE_QUERIES" title="Permalink to this definition">¶</a></dt>
+<dd><p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="sql_queries.COPY_TABLE_QUERIES">
+<span class="sig-prename descclassname"><span class="pre">sql_queries.</span></span><span class="sig-name descname"><span class="pre">COPY_TABLE_QUERIES</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">List</span> <span class="pre">of</span> <span class="pre">COPY</span> <span class="pre">FROM</span> <span class="pre">table</span> <span class="pre">queries</span> <span class="pre">statements</span> <span class="pre">executed</span> <span class="pre">by</span> <span class="pre">the</span> <span class="pre">ETLPipeline.</span></em><a class="headerlink" href="#sql_queries.COPY_TABLE_QUERIES" title="Permalink to this definition">¶</a></dt>
+<dd><p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="sql_queries.INSERT_TABLE_QUERIES">
+<span class="sig-prename descclassname"><span class="pre">sql_queries.</span></span><span class="sig-name descname"><span class="pre">INSERT_TABLE_QUERIES</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">List</span> <span class="pre">of</span> <span class="pre">INSERT</span> <span class="pre">table</span> <span class="pre">queries</span> <span class="pre">statements</span> <span class="pre">executed</span> <span class="pre">by</span> <span class="pre">the</span> <span class="pre">ETLPipeline.</span></em><a class="headerlink" href="#sql_queries.INSERT_TABLE_QUERIES" title="Permalink to this definition">¶</a></dt>
+<dd><p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.</p>
+</dd></dl>
+
 </section>
 <section id="module-contents">
 <h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this heading">¶</a></h2>
@@ -422,8 +447,7 @@ and insert data into the Redshift Data Warehouse tables.</p>
 <dl class="py class">
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">etl.</span></span><span class="sig-name descname"><span class="pre">ETLPipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span></em><span class="sig-paren">)</span></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>This class defines the Redshift ETL pipeline.</p>
+<dd><p>This class defines the Redshift ETL pipeline.</p>
 <p>Code usage example with default pyscopg2 connection:</p>
 <p>connection = Connection()
 pipeline = ETLPipeline(connection)
@@ -474,7 +498,7 @@ otherwise use the default Psycopg2 adapter.</p>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
       
-        <a href="modules.html" class="btn btn-neutral float-left" title="etl" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="modules.html" class="btn btn-neutral float-left" title="ETL" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

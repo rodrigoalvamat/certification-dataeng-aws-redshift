@@ -7,7 +7,7 @@ terraform.tfstate
 terraform.tfstate.backup
 
 # aws sensitive config info
-aws.ini
+dwh.cfg
 
 # test data
-data
+data/*.csv
